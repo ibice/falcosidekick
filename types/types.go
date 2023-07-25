@@ -490,6 +490,8 @@ type kafkaConfig struct {
 	Async           bool
 	RequiredACKs    string
 	TopicCreation   bool
+	UseTLS          bool
+	CaCertFile      string
 }
 
 type KafkaRestConfig struct {

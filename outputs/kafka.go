@@ -2,10 +2,13 @@ package outputs
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"strings"
 	"time"
 
@@ -20,12 +23,30 @@ import (
 // NewKafkaClient returns a new output.Client for accessing the Apache Kafka.
 func NewKafkaClient(config *types.Configuration, stats *types.Statistics, promStats *types.PromStatistics, statsdClient, dogstatsdClient *statsd.Client) (*Client, error) {
 
+	var tlsConfig *tls.Config
+	if config.Kafka.UseTLS {
+		tlsConfig = &tls.Config{}
+		if config.Kafka.CaCertFile != "" {
+			caCertPool, err := x509.SystemCertPool()
+			if err != nil {
+				caCertPool = x509.NewCertPool()
+			}
+			caCert, err := os.ReadFile(config.Kafka.CaCertFile)
+			if err != nil {
+				return nil, err
+			}
+			caCertPool.AppendCertsFromPEM(caCert)
+			tlsConfig.RootCAs = caCertPool
+		}
+	}
+
 	transport := &kafka.Transport{
 		Dial: (&net.Dialer{
 			Timeout:   3 * time.Second,
 			DualStack: true,
 		}).DialContext,
 		ClientID: config.Kafka.ClientID,
+		TLS:      tlsConfig,
 	}
 
 	var err error
@@ -66,6 +87,12 @@ func NewKafkaClient(config *types.Configuration, stats *types.Statistics, promSt
 		Async:                  config.Kafka.Async,
 		Transport:              transport,
 		AllowAutoTopicCreation: config.Kafka.TopicCreation,
+	}
+
+	if config.Debug {
+		kafkaWriter.Logger = kafka.LoggerFunc(func(format string, args ...any) {
+			log.Printf("[DEBUG] : Kafka writer - "+format, args...)
+		})
 	}
 
 	switch strings.ToLower(config.Kafka.Balancer) {

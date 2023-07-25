@@ -296,6 +296,8 @@ func getConfig() *types.Configuration {
 	v.SetDefault("Kafka.Async", false)
 	v.SetDefault("Kafka.RequiredACKs", "NONE")
 	v.SetDefault("Kafka.TopicCreation", false)
+	v.SetDefault("Kafka.UseTLS", false)
+	v.SetDefault("Kafka.CaCertFile", "")
 
 	v.SetDefault("KafkaRest.Address", "")
 	v.SetDefault("KafkaRest.Version", 2)

@@ -469,6 +469,8 @@ kafka:
   # balancer: "" # partition balancing strategy when producing, (default: "round_robin")
   # clientid: "" # specify a client.id when communicating with the broker for tracing
   # topiccreation: false # auto create the topic if it doesn't exist (default: false)
+  # usetls: false # enable TLS transport to brokers
+  # cacertfile: "" # for broker certification
 
 kafkarest:
   address: "" # The full URL to the topic (example "http://kafkarest:8082/topics/test")
@@ -1036,6 +1038,8 @@ care of lower/uppercases**) : `yaml: a.b --> envvar: A_B` :
 - **KAFKA_MINIMUMPRIORITY**: minimum priority of event for using this output,
   order is
   `emergency|alert|critical|error|warning|notice|informational|debug or "" (default)`
+- **KAFKA_USETLS**: enable TLS transport to brokers (default: false)
+- **KAFKA_CACERTFILE**: for broker certification (default: "")
 - **KAFKAREST_ADDRESS**: The full URL to the topic (example "http://kafkarest:8082/topics/test")
 - **KAFKAREST_VERSION**: Kafka Rest Proxy API version 2|1 (default: 2)
 - **KAFKAREST_MINIMUMPRIORITY** : minimum priority of event for using this output, order is

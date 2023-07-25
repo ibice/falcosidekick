@@ -286,7 +286,8 @@ kafka:
   # balancer: "" # partition balancing strategy when producing, (default: "round_robin")
   # clientid: "" # specify a client.id when communicating with the broker for tracing
   # topiccreation: false # auto create the topic if it doesn't exist (default: false)
-
+  # usetls: false # enable TLS transport to brokers
+  # cacertfile: "" # for broker certification
 kafkarest:
   address: "" # The full URL to the topic (example "http://kafkarest:8082/topics/test")
   #version: 2 # Kafka Rest Proxy API version 2|1 (default: 2)
